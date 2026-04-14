@@ -26,7 +26,8 @@ module Debounce(
 				input wire noisy_btn,
 				output reg clean_btn
     );
-    reg [16:0] count; //~1ms at 100MHz
+    parameter STABLE_CNT = 100_000;  // ~1ms at 100MHz (override in sim)
+    reg [16:0] count;
     reg btn_sync;
     
     always @(posedge clk or posedge rst)begin
@@ -41,7 +42,7 @@ module Debounce(
     			count <=0;
     		end else begin
     			count <=count +1;
-    			if(count == 17'd100_000)begin
+    			if(count == STABLE_CNT)begin
     				clean_btn <= btn_sync;
     				count <=0;
     			end
