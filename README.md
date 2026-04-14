@@ -11,10 +11,10 @@ A fully functional **12-hour digital clock with alarm** implemented in Verilog o
 - [Module Descriptions](#-module-descriptions)
   - [digital\_clock\_top](#1-digital_clock_topv--top-module)
   - [clock\_div](#2-clock_divv--clock-divider)
-  - [time\_Counter](#3-time_counterv--time-counter)
-  - [Debounce](#4-debouncev--button-debouncer)
-  - [pulse Gen](#5-pulse-genv--edge-detector--pulse-generator)
-  - [FSM Control](#6-fsm-controlv--finite-state-machine-controller)
+  - [time\_counter](#3-time_counterv--time-counter)
+  - [debounce](#4-debouncev--button-debouncer)
+  - [pulse\_gen](#5-pulse_genv--edge-detector--pulse-generator)
+  - [fsm\_control](#6-fsm_controlv--finite-state-machine-controller)
   - [alarm](#7-alarmv--alarm-logic)
   - [seven\_seg](#8-seven_segv--seven-segment-display-driver)
 - [FSM State Diagram](#-fsm-state-diagram)
@@ -113,7 +113,7 @@ Generates a **single-cycle pulse every 1 second** from the 100 MHz input clock.
 
 ---
 
-### 3. `time_Counter.v` — Time Counter
+### 3. `time_counter.v` — Time Counter
 
 Maintains the current time in **12-hour format** (1–12) with an AM/PM flag.
 
@@ -134,7 +134,7 @@ sec → 0–59, then rolls over to 0
 
 ---
 
-### 4. `Debounce.v` — Button Debouncer
+### 4. `debounce.v` — Button Debouncer
 
 Eliminates mechanical **contact bounce** on push-button inputs.
 
@@ -145,7 +145,7 @@ Eliminates mechanical **contact bounce** on push-button inputs.
 
 ---
 
-### 5. `pulse Gen.v` — Edge Detector / Pulse Generator
+### 5. `pulse_gen.v` — Edge Detector / Pulse Generator
 
 Converts a **level signal** (from the debouncer) into a **single-clock-cycle pulse** on the rising edge.
 
@@ -158,7 +158,7 @@ This ensures that holding a button down produces only **one** increment, not a c
 
 ---
 
-### 6. `FSM Control.v` — Finite State Machine Controller
+### 6. `fsm_control.v` — Finite State Machine Controller
 
 A **5-state Moore FSM** that determines the clock's operating mode.
 
@@ -293,10 +293,10 @@ stateDiagram-v2
    - Target part: `xc7a35tcpg236-1` (Basys 3)
 
 3. **Add source files**
-   - Add all `.v` files from this repository as design sources.
+   - Add all `.v` files from the `src/` directory as design sources.
 
 4. **Add constraints**
-   - Create or import a `.xdc` constraints file with the pin mappings shown in the [I/O Pin Mapping](#-io-pin-mapping) section.
+   - Import the `constraints/Basys3_DigitalClock.xdc` file as a constraints source.
 
 5. **Synthesize & Implement**
    - Run *Synthesis* → *Implementation* → *Generate Bitstream*.
@@ -326,16 +326,24 @@ stateDiagram-v2
 ```
 FPGA-Digital-Clock/
 │
-├── digital_clock_top.v    # Top-level module — wires everything together
-├── clock_div.v            # 100 MHz → 1 Hz clock divider
-├── time Counter.v         # HH:MM:SS time counter (12-hour format)
-├── Debounce.v             # Button debounce filter (~1 ms)
-├── pulse Gen.v            # Rising-edge detector / single-pulse generator
-├── FSM Control.v          # 5-state FSM for mode control
-├── alarm.v                # Alarm set, match, and trigger logic
-├── seven_seg.v            # 4-digit seven-segment mux display driver
-├── Img/                   # Project images (screenshots, block diagrams, etc.)
-└── README.md              # This file
+├── src/                              # Synthesizable RTL sources
+│   ├── digital_clock_top.v           #   Top-level module — wires everything together
+│   ├── clock_div.v                   #   100 MHz → 1 Hz clock divider
+│   ├── time_counter.v                #   HH:MM:SS time counter (12-hour format)
+│   ├── debounce.v                    #   Button debounce filter (~1 ms)
+│   ├── pulse_gen.v                   #   Rising-edge detector / single-pulse generator
+│   ├── fsm_control.v                 #   5-state FSM for mode control
+│   ├── alarm.v                       #   Alarm set, match, and trigger logic
+│   └── seven_seg.v                   #   4-digit seven-segment mux display driver
+│
+├── constraints/                      # Pin assignment & timing constraints
+│   └── Basys3_DigitalClock.xdc       #   Basys 3 constraint file
+│
+├── sim/                              # Simulation / testbenches
+│   └── tb_digital_clock_top.v        #   Top-level testbench
+│
+├── Img/                              # Project images (screenshots, block diagrams, etc.)
+└── README.md                         # This file
 ```
 
 ---
