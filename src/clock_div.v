@@ -28,7 +28,7 @@ module clock_div(
     parameter MAX_CNT=100_000_000;
     reg [26:0] count;	
     
-    always@(posedge clk or negedge rst)begin
+    always@(posedge clk or posedge rst)begin
     	if(rst)begin
     		count<=0;
     		sec_tick<=1'b0;
