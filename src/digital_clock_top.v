@@ -45,6 +45,7 @@ module digital_clock_top(
     wire       am_pm;
 
 // FSM control signals
+    wire [2:0] state;
     wire inc_hour;
     wire inc_min;
     wire inc_alarm_hour;
@@ -73,6 +74,8 @@ module digital_clock_top(
 						.clk(clk),
 						.rst(rst),
 						.sec_tick(sec_tick),
+						.inc_hour(inc_hour),
+						.inc_min(inc_min),
 						.sec(sec),
 						.min(min),
 						.hour(hour),
@@ -135,6 +138,7 @@ module digital_clock_top(
 						.rst(rst),
 						.mode_btn(mode_pulse),
 						.inc_btn(inc_pulse),
+						.state(state),
 						.inc_hour(inc_hour),
 						.inc_min(inc_min),
 						.inc_alarm_hour(inc_alarm_hour),
