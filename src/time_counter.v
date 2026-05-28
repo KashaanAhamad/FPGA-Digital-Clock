@@ -21,13 +21,15 @@
 
 
 module time_Counter(
-					input wire clk,
-					input wire rst,
-					input wire sec_tick,
-					output reg [5:0] sec,
-					output reg [5:0] min,
-					output reg [3:0] hour,
-					output reg 		 am_pm
+				input wire clk,
+				input wire rst,
+				input wire sec_tick,
+				input wire inc_hour,
+				input wire inc_min,
+				output reg [5:0] sec,
+				output reg [5:0] min,
+				output reg [3:0] hour,
+				output reg 		 am_pm
     );
     
     always @(posedge clk or posedge rst)begin
@@ -36,6 +38,22 @@ module time_Counter(
     		min<=0;
     		hour<=4'd12;
     		am_pm<= 0;	//AM	
+    	end else if(inc_hour) begin
+    		// Manual hour set (from FSM)
+    		if(hour ==4'd11)begin
+    			hour <=4'd12;
+    			am_pm <=~am_pm;
+    		end else if(hour == 4'd12)begin
+    			hour <= 4'd1;
+    		end else begin
+    			hour <=hour +1;
+    		end
+    	end else if(inc_min) begin
+    		// Manual minute set (from FSM)
+    		if(min == 6'd59)
+    			min <= 0;
+    		else
+    			min <= min + 1;
     	end else if(sec_tick) begin
     		//Second
     		if(sec ==6'd59)begin
@@ -55,7 +73,7 @@ module time_Counter(
     			hour <=hour +1;
     		end
     	end else begin
-    		min = min +1;
+    		min <= min +1;
     	end
     
     end else begin
